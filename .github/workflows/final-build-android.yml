@@ -451,7 +451,7 @@ jobs:
         
         p4a create --dist-name tradingbot \
             --bootstrap=service_only \
-            --requirements=python3 \
+            --requirements=hostpython3==3.9.21,python3==3.9.21 \
             --arch=arm64-v8a \
             --force-build \
             --ndk-api=21 \
@@ -477,7 +477,7 @@ jobs:
             --name="TradingBot" \
             --version=1.0 \
             --bootstrap=service_only \
-            --requirements=python3 \
+            --requirements=hostpython3==3.9.21,python3==3.9.21 \
             --arch=arm64-v8a \
             --permission INTERNET \
             --permission WRITE_EXTERNAL_STORAGE \
