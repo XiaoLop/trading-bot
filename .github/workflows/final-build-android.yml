@@ -454,7 +454,8 @@ jobs:
             --requirements=python3 \
             --arch=arm64-v8a \
             --force-build \
-            --ndk-api=21 2>&1 | tee p4a_create.log || {
+            --ndk-api=21 \
+            --android-api=30 2>&1 | tee p4a_create.log || {
           echo "❌ Distribution创建失败"
           echo "=== 错误日志（最后150行）==="
           tail -150 p4a_create.log
@@ -482,6 +483,7 @@ jobs:
             --permission WRITE_EXTERNAL_STORAGE \
             --permission READ_EXTERNAL_STORAGE \
             --dist-name=tradingbot \
+            --android-api=30 \
             --debug 2>&1 | tee p4a_apk.log || {
           echo "❌ APK打包失败"
           echo "=== APK打包日志（最后100行）==="
