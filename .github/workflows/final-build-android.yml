@@ -326,8 +326,8 @@ jobs:
         # 🚀 终极方案：直接使用Python-for-Android绕过buildozer
         echo "🔥 buildozer无视所有架构设置，直接使用Python-for-Android！"
         
-        # 安装Python-for-Android
-        pip install python-for-android
+        # 安装Python-for-Android（降级到稳定版本，避免新版python -m build隔离环境问题）
+        pip install python-for-android==2024.1.15
         
         # 🔧 修补P4A的recipe.py：为python -m build添加--no-isolation
         # 解决android包在隔离构建环境中缺少Cython的问题
