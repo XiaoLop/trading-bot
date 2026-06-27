@@ -1,83 +1,64 @@
-name: 📱 构建 Android APK
+name: 📱 Build Android APK
 
 on:
-  # 手动触发
   workflow_dispatch:
-  # 推送到 main 分支时自动触发
   push:
-    branches: [ main, master ]
+    branches: [main, master]
 
 jobs:
   build-apk:
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
+    runs-on: ubuntu-22.04
+    timeout-minutes: 90
 
     steps:
-    # 1. 检出代码
-    - name: 📥 检出代码
-      uses: actions/checkout@v4
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
 
-    # 2. 设置 Python
-    - name: 🐍 设置 Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
 
-    # 3. 安装系统依赖
-    - name: 📦 安装系统依赖
-      run: |
-        sudo apt-get update -qq
-        sudo apt-get install -y \
-          git \
-          zip \
-          unzip \
-          openjdk-17-jdk \
-          python3-pip \
-          autoconf \
-          libtool \
-          pkg-config \
-          zlib1g-dev \
-          libncurses5-dev \
-          libncursesw5-dev \
-          libtinfo5 \
-          cmake \
-          libffi-dev \
-          libssl-dev \
-          automake \
-          build-essential
+      - name: 📦 Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            git zip unzip openjdk-17-jdk python3-pip python3-dev \
+            autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev \
+            libtinfo5 cmake libffi-dev libssl-dev automake build-essential \
+            libgl1-mesa-dev libgles2-mesa-dev libglew-dev libsdl2-dev \
+            libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev \
+            libswscale-dev libavformat-dev libavcodec-dev libfreetype6-dev \
+            libpng-dev libjpeg-dev libffi-dev
 
-    # 4. 安装 Python 依赖
-    - name: 🐍 安装 Python 依赖
-      run: |
-        python -m pip install --upgrade pip
-        pip install buildozer==1.5.0
-        pip install cython==0.29.36
+      - name: 🐍 Install Python packages
+        run: |
+          python -m pip install --upgrade pip
+          pip install buildozer==1.5.0 cython==0.29.36
 
-    # 5. 构建 APK
-    - name: 🔨 构建 APK
-      run: |
-        echo "🚀 开始构建 Android APK..."
-        echo "预计需要 30-60 分钟，请耐心等待..."
-        buildozer android debug
-        echo "✅ 构建完成！"
+      - name: 📱 Build APK with Buildozer
+        run: |
+          echo "🚀 Starting APK build..."
+          echo "This will take 30-60 minutes for the first build."
+          buildozer android debug
+          echo "✅ Build finished!"
 
-    # 6. 查找 APK 文件
-    - name: 🔍 查找 APK 文件
-      run: |
-        echo "📱 查找生成的 APK 文件..."
-        find . -name "*.apk" -type f
-        ls -lh bin/ 2>/dev/null || echo "bin 目录不存在"
+      - name: 🔍 Locate APK
+        run: |
+          echo "Searching for APK files..."
+          find . -name "*.apk" -type f
+          ls -la bin/ 2>/dev/null || echo "bin/ directory not found"
 
-    # 7. 上传 APK 到 Artifact
-    - name: 📤 上传 APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: TradingBot-APK
-        path: bin/*.apk
-        retention-days: 30
+      - name: 📤 Upload APK artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TradingBot-APK
+          path: bin/*.apk
+          retention-days: 30
 
-    # 8. 构建报告
-    - name: 📊 构建报告
-      run: |
-        echo "📱 APK 构建完成！"
-        echo "请在 Actions 页面的 Artifacts 中下载 APK 文件。"
+      - name: 📊 Build report
+        if: always()
+        run: |
+          echo "=== Build Summary ==="
+          find . -name "*.apk" -type f -exec ls -lh {} \; 2>/dev/null || echo "No APK found"
