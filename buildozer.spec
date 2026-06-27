@@ -10,7 +10,7 @@ source.include_exts = py,png,jpg,kv,atlas,ttf,txt,json,env,md,xml
 # 显式包含 src 目录和配置文件
 source.include_patterns = src/*,config/*,groups_config.py
 
-requirements = python3,kivy,kivymd,requests,urllib3,telethon,cryptg,python-dotenv,aiohttp,aiofiles,python-dateutil,plyer,pyjnius
+requirements = python3==3.11.2,kivy,kivymd,requests,urllib3,telethon,cryptg,python-dotenv,aiohttp,aiofiles,python-dateutil,plyer,pyjnius
 
 android.permissions = INTERNET,ACCESS_NETWORK_STATE,WAKE_LOCK,FOREGROUND_SERVICE
 android.archs = arm64-v8a, armeabi-v7a
@@ -23,3 +23,4 @@ fullscreen = 0
 [buildozer]
 log_level = 2
 warn_on_root = 1
+p4a.branch = v2024.01.21
