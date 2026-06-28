@@ -327,7 +327,7 @@ jobs:
         echo "🔥 buildozer无视所有架构设置，直接使用Python-for-Android！"
         
         # 安装Python-for-Android（降级到稳定版本，避免新版python -m build隔离环境问题）
-        pip install python-for-android==2024.1.15
+        pip install python-for-android==2024.1.21
         
         # 设置环境变量 - 使用P4A推荐的NDK 25版本
         export ANDROID_HOME=/usr/local/lib/android/sdk
