@@ -329,23 +329,6 @@ jobs:
         # 安装Python-for-Android（降级到稳定版本，避免新版python -m build隔离环境问题）
         pip install python-for-android==2024.1.15
         
-        # 🔧 修补P4A的recipe.py：为python -m build添加--no-isolation
-        # 解决android包在隔离构建环境中缺少Cython的问题
-        echo "🔧 修补P4A recipe.py..."
-        P4A_RECIPE=$(python -c "import pythonforandroid; print(pythonforandroid.__path__[0])")/recipe.py
-        if [ -f "$P4A_RECIPE" ]; then
-          echo "找到P4A recipe.py: $P4A_RECIPE"
-          # 备份原文件
-          cp "$P4A_RECIPE" "$P4A_RECIPE.bak"
-          # 替换 python -m build 为 python -m build --no-isolation
-          sed -i 's/python -m build --wheel/python -m build --wheel --no-isolation/g' "$P4A_RECIPE"
-          echo "✅ P4A recipe.py 已修补（添加 --no-isolation）"
-          # 验证修改
-          grep -n "python -m build" "$P4A_RECIPE" || echo "⚠️ 未找到 'python -m build' 模式"
-        else
-          echo "⚠️ 未找到P4A recipe.py，跳过修补"
-        fi
-        
         # 设置环境变量 - 使用P4A推荐的NDK 25版本
         export ANDROID_HOME=/usr/local/lib/android/sdk
         export ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
@@ -468,7 +451,7 @@ jobs:
         
         p4a create --dist-name tradingbot \
             --bootstrap=service_only \
-            --requirements=hostpython3==3.9.21,python3==3.9.21 \
+            --requirements=python3 \
             --arch=arm64-v8a \
             --force-build \
             --ndk-api=21 \
@@ -494,7 +477,7 @@ jobs:
             --name="TradingBot" \
             --version=1.0 \
             --bootstrap=service_only \
-            --requirements=hostpython3==3.9.21,python3==3.9.21 \
+            --requirements=python3 \
             --arch=arm64-v8a \
             --permission INTERNET \
             --permission WRITE_EXTERNAL_STORAGE \
